@@ -31,7 +31,7 @@ def parse_config():
     argparser.add_argument('-d', '--data', dest='data_dir', required=True)
     args = argparser.parse_args()
 
-    with open(args.dataDir + '/config.yml', 'r') as config_file:
+    with open(args.data_dir + '/config.yml', 'r') as config_file:
         config = yaml.load(config_file)
         return Config(args.data_dir, config)
 

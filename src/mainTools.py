@@ -1,9 +1,10 @@
 # coding=utf-8
 
-import sys
 import argparse
-import json
 import csv
+import itertools
+import json
+import sys
 
 import requests
 import yaml
@@ -34,6 +35,14 @@ def parse_config():
     with open(args.data_dir + '/config.yml', 'r') as config_file:
         config = yaml.load(config_file)
         return Config(args.data_dir, config)
+
+def slice_stream(iterator, size):
+    while True:
+        chunk = list(itertools.islice(iterator, size))
+        if not chunk:
+            raise StopIteration
+        else:
+            yield chunk
 
 def make_request(config, api_method, rows):
     documents = map(lambda row: {'id': row[config.id_col], 'text': row[config.data_col]}, rows)

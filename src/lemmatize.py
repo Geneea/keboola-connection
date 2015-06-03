@@ -15,7 +15,7 @@ def lemmatize(config):
             results = make_request(config, 'lemmatize', rows)
             for doc in results:
                 doc_id = doc['id'].encode('utf-8')
-                lemmas = doc['lemmatizedText']
+                lemmas = doc['lemmas']
                 for i in xrange(len(lemmas)):
                     writer.writerow({
                         config.id_col: doc_id,

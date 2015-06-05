@@ -4,6 +4,7 @@ import argparse
 import csv
 import itertools
 import json
+import os
 import sys
 
 import requests
@@ -22,10 +23,11 @@ class Config:
         self.input_path = data_dir + '/in/tables/' + config['storage']['input']['tables'][0]['source']
         self.output_path = data_dir + '/out/tables/' + config['storage']['output']['tables'][0]['source']
         self.user_key = config['parameters']['user_key']
-        self.customer_id = config['parameters']['customer_id']
         self.id_col = config['parameters']['id_column']
         self.data_col = config['parameters']['data_column']
         self.language = config['parameters']['language'] if 'language' in config['parameters'] else None
+
+        self.customer_id = os.environ['KBC_PROJECTID']
 
 def parse_config():
     argparser = argparse.ArgumentParser()

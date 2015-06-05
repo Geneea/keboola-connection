@@ -30,7 +30,6 @@ storage:
         source: topic.csv
 parameters:
   user_key: <ENTER API KEY HERE>
-  customer_id: <ENTER CUSTOMER ID HERE>
   id_column: id
   data_column: text
   language: en # OPTIONAL

@@ -1,11 +1,11 @@
-# VERSION 2.1.1
+# VERSION 2.2.0
 
 FROM keboola/base
 MAINTAINER Tomáš Mudruňka <mudrunka@geneea.com>
 
 # setup the environment
 WORKDIR /tmp
-RUN yum -y install wget git
+RUN yum -y install wget
 RUN wget https://bootstrap.pypa.io/get-pip.py
 RUN python get-pip.py
 RUN pip install requests

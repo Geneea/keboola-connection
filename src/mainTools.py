@@ -75,7 +75,15 @@ def make_request(config, api_method, rows):
     }
 
     response = requests.post(BASE_URL + api_method, headers=headers, data=json.dumps(data))
-    response.raise_for_status()
+    if response.status_code >= 400:
+        err = response.json()
+        print >> sys.stderr, "HTTP error {code}, {e}: {msg} (for documents {ids})".format(
+            code=response.status_code, e=err.exception, msg=err.message,
+            ids=','.join(map(lambda doc: doc['id'], documents))
+        )
+        sys.stderr.flush()
+
+        return []
 
     global DOC_COUNT
     DOC_COUNT += len(documents)

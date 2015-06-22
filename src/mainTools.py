@@ -11,6 +11,8 @@ import requests
 import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
+MAX_REQ_SIZE = 400 * 1024
+DOC_COUNT = 0
 
 try:
     from requests.packages import urllib3
@@ -47,6 +49,18 @@ def slice_stream(iterator, size):
             yield chunk
 
 def make_request(config, api_method, rows):
+    size = map(lambda row: len(row[config.data_col]), rows)
+    size = reduce(lambda x, y: x + y, size)
+    if size > MAX_REQ_SIZE:
+        if len(rows) < 2:
+            raise IOError("a document is too large")
+
+        half = len(rows) / 2
+        return itertools.chain(
+            make_request(config, api_method, rows[:half]),
+            make_request(config, api_method, rows[half:])
+        )
+
     documents = map(lambda row: {'id': row[config.id_col], 'text': row[config.data_col]}, rows)
     documents = filter(lambda doc: len(doc['text']) > 0, documents)
 
@@ -60,11 +74,13 @@ def make_request(config, api_method, rows):
         'documents': documents
     }
 
-    print >> sys.stdout, "sending {n} documents for analysis".format(n=len(documents))
-    sys.stdout.flush()
-
     response = requests.post(BASE_URL + api_method, headers=headers, data=json.dumps(data))
     response.raise_for_status()
+
+    global DOC_COUNT
+    DOC_COUNT += len(documents)
+    print >> sys.stdout, "successfully processed {n} documents".format(n=DOC_COUNT)
+    sys.stdout.flush()
 
     return response.json()
 
@@ -72,7 +88,7 @@ def main(function):
     try:
         config = parse_config()
         function(config)
-        print >> sys.stdout, "successfully finished"
+        print >> sys.stdout, "the analysis finished"
         sys.exit(0)
     except (LookupError, IOError, csv.Error) as e:
         print >> sys.stderr, "{type}: {e}".format(type=type(e).__name__, e=e)

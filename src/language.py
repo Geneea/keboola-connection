@@ -11,7 +11,7 @@ def language(config):
         writer = csv.DictWriter(output_file, fieldnames=[config.id_col, 'language'])
         writer.writeheader()
 
-        for rows in slice_stream(reader, 50):
+        for rows in slice_stream(reader, 100):
             results = make_request(config, 'language', rows)
             for doc in results:
                 writer.writerow({

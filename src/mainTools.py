@@ -48,6 +48,7 @@ def slice_stream(iterator, size):
 
 def make_request(config, api_method, rows):
     documents = map(lambda row: {'id': row[config.id_col], 'text': row[config.data_col]}, rows)
+    documents = filter(lambda doc: len(doc['text']) > 0, documents)
 
     headers = {
         'Content-Type': 'application/json',

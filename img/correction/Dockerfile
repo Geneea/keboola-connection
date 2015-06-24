@@ -1,4 +1,4 @@
-# VERSION 2.2.3
+# VERSION 2.2.4
 
 FROM geneea/keboola-connection
 MAINTAINER Tomáš Mudruňka <mudrunka@geneea.com>

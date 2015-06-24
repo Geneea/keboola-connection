@@ -46,8 +46,7 @@ def unfussy_csv_reader(csv_reader):
             yield next(csv_reader)
         except csv.Error as e:
             print >> sys.stderr, "CSV read error: {e}".format(e=e)
-            sys.stderr.flush()
-            continue
+            raise StopIteration
 
 def slice_stream(iterator, size):
     while True:

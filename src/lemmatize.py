@@ -2,11 +2,11 @@
 
 import csv
 
-from mainTools import main, slice_stream, make_request
+from mainTools import main, unfussy_csv_reader, slice_stream, make_request
 
 def lemmatize(config):
     with open(config.input_path, 'rb') as input_file, open(config.output_path, 'wb') as output_file:
-        reader = csv.DictReader(input_file)
+        reader = unfussy_csv_reader(csv.DictReader(input_file))
 
         writer = csv.DictWriter(output_file, fieldnames=[config.id_col, 'lemma', 'lemmaIndex'])
         writer.writeheader()

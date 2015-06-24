@@ -2,11 +2,11 @@
 
 import csv
 
-from mainTools import main, slice_stream, make_request
+from mainTools import main, unfussy_csv_reader, slice_stream, make_request
 
 def correction(config):
     with open(config.input_path, 'rb') as input_file, open(config.output_path, 'wb') as output_file:
-        reader = csv.DictReader(input_file)
+        reader = unfussy_csv_reader(csv.DictReader(input_file))
 
         writer = csv.DictWriter(output_file, fieldnames=[config.id_col, 'correctedText', 'isCorrected', 'isDiacritized'])
         writer.writeheader()
@@ -18,7 +18,7 @@ def correction(config):
                     config.id_col: doc['id'].encode('utf-8'),
                     'correctedText': doc['correctedText'].encode('utf-8'),
                     'isCorrected': str(doc['corrected']),
-                    'isDiacritized': str(['diacritized'])
+                    'isDiacritized': str(doc['diacritized'])
                 })
 
 if __name__ == '__main__':

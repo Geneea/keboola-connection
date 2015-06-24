@@ -40,6 +40,15 @@ def parse_config():
         config = yaml.load(config_file)
         return Config(args.data_dir, config)
 
+def unfussy_csv_reader(csv_reader):
+    while True:
+        try:
+            yield next(csv_reader)
+        except csv.Error as e:
+            print >> sys.stderr, "CSV read error: {e}".format(e=e)
+            sys.stderr.flush()
+            continue
+
 def slice_stream(iterator, size):
     while True:
         chunk = list(itertools.islice(iterator, size))
@@ -52,8 +61,10 @@ def make_request(config, api_method, rows):
     size = map(lambda row: len(row[config.data_col]), rows)
     size = reduce(lambda x, y: x + y, size)
     if size > MAX_REQ_SIZE:
-        if len(rows) < 2:
-            raise IOError("a document is too large")
+        if len(rows) == 1:
+            print >> sys.stderr, "document {id} is too large".format(id=rows[0][config.id_col])
+            sys.stderr.flush()
+            return []
 
         half = len(rows) / 2
         return itertools.chain(
@@ -98,7 +109,7 @@ def main(function):
         function(config)
         print >> sys.stdout, "the analysis finished"
         sys.exit(0)
-    except (LookupError, IOError, csv.Error) as e:
+    except (LookupError, IOError) as e:
         print >> sys.stderr, "{type}: {e}".format(type=type(e).__name__, e=e)
         sys.exit(1)
     except Exception as e:

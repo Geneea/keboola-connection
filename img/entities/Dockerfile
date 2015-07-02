@@ -4,4 +4,4 @@ FROM geneea/keboola-connection
 MAINTAINER Tomáš Mudruňka <mudrunka@geneea.com>
 
 WORKDIR /home
-ENTRYPOINT python ./src/lemmatize.py --data=/data
+ENTRYPOINT python ./src/entities.py --data=/data

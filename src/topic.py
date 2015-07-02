@@ -6,7 +6,7 @@ from mainTools import main, unfussy_csv_reader, slice_stream, make_request
 
 def topic(config):
     with open(config.input_path, 'rb') as input_file, open(config.output_path, 'wb') as output_file:
-        reader = unfussy_csv_reader(csv.DictReader(input_file))
+        reader = unfussy_csv_reader(input_file)
 
         writer = csv.DictWriter(output_file, fieldnames=[config.id_col, 'topic', 'confidence'])
         writer.writeheader()

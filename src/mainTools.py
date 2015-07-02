@@ -40,7 +40,9 @@ def parse_config():
         config = yaml.load(config_file)
         return Config(args.data_dir, config)
 
-def unfussy_csv_reader(csv_reader):
+def unfussy_csv_reader(input_file):
+    safe_input = itertools.imap(lambda line: line.replace('\0', ''), input_file)
+    csv_reader = csv.DictReader(safe_input)
     while True:
         try:
             yield next(csv_reader)
@@ -57,7 +59,7 @@ def slice_stream(iterator, size):
             yield chunk
 
 def make_request(config, api_method, rows):
-    size = map(lambda row: len(row[config.data_col]), rows)
+    size = itertools.imap(lambda row: len(row[config.data_col]), rows)
     size = reduce(lambda x, y: x + y, size)
     if size > MAX_REQ_SIZE:
         if len(rows) == 1:

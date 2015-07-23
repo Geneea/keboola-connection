@@ -91,11 +91,17 @@ def make_request(config, api_method, rows):
     url = (BASE_URL if not config.use_beta else BETA_URL) + api_method
     response = requests.post(url, headers=headers, data=json.dumps(data))
     if response.status_code >= 400:
-        err = response.json()
-        print >> sys.stderr, "HTTP error {code}, {e}: {msg} (for documents {ids})".format(
-            code=response.status_code, e=err.exception, msg=err.message,
-            ids=','.join(map(lambda doc: doc['id'], documents))
-        )
+        ids = ','.join(map(lambda doc: doc['id'], documents))
+        try:
+            err = response.json()
+            print >> sys.stderr, "HTTP error {code}, {e}: {msg} (for documents {ids})".format(
+                code=response.status_code, e=err.exception, msg=err.message, ids=ids
+            )
+        except ValueError:
+            err = response.text()
+            print >> sys.stderr, "HTTP error {code} (for documents {ids})\n{e}".format(
+                code=response.status_code, ids=ids, e=err
+            )
         sys.stderr.flush()
 
         return []

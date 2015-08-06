@@ -14,6 +14,8 @@ BASE_URL = 'https://api.geneea.com/keboola/'
 BETA_URL = 'https://beta-api.geneea.com/keboola/'
 MAX_REQ_SIZE = 400 * 1024
 DOC_COUNT = 0
+CONNECT_TIMEOUT = 10.01
+READ_TIMEOUT = 128
 
 try:
     from requests.packages import urllib3
@@ -78,6 +80,7 @@ def make_request(config, api_method, rows):
     documents = map(lambda row: {'id': row[config.id_col], 'text': row[config.data_col]}, rows)
     documents = filter(lambda doc: len(doc['text']) > 0, documents)
 
+    url = (BASE_URL if not config.use_beta else BETA_URL) + api_method
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'user_key ' + config.user_key
@@ -87,29 +90,38 @@ def make_request(config, api_method, rows):
         'language': config.language,
         'documents': documents
     }
+    response = json_post(url, headers, data)
 
-    url = (BASE_URL if not config.use_beta else BETA_URL) + api_method
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    if response.status_code >= 400:
+    if len(response) > 0:
+        global DOC_COUNT
+        DOC_COUNT += len(documents)
+        print >> sys.stdout, "successfully processed {n} documents".format(n=DOC_COUNT)
+        sys.stdout.flush()
+    else:
         ids = ','.join(map(lambda doc: doc['id'], documents))
-        try:
-            err = response.json()
-            print >> sys.stderr, "HTTP error {code}, {e}: {msg} (for documents {ids})".format(
-                code=response.status_code, e=err.exception, msg=err.message, ids=ids
-            )
-        except ValueError:
-            err = response.text()
-            print >> sys.stderr, "HTTP error {code} (for documents {ids})\n{e}".format(
-                code=response.status_code, ids=ids, e=err
-            )
+        print >> sys.stdout, "failed to process documents {ids}".format(ids=ids)
+        sys.stdout.flush()
         sys.stderr.flush()
 
-        return []
+    return response
 
-    global DOC_COUNT
-    DOC_COUNT += len(documents)
-    print >> sys.stdout, "successfully processed {n} documents".format(n=DOC_COUNT)
-    sys.stdout.flush()
+def json_post(url, headers, data):
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(data), timeout=(CONNECT_TIMEOUT, READ_TIMEOUT))
+        if response.status_code >= 400:
+            try:
+                err = response.json()
+                print >> sys.stderr, "HTTP error {code}, {e}: {msg}".format(
+                    code=response.status_code, e=err.exception, msg=err.message
+                )
+            except ValueError:
+                err = response.text
+                print >> sys.stderr, "HTTP error {code}\n{e}".format(code=response.status_code, e=err)
+
+            return []
+    except requests.RequestException as e:
+        print >> sys.stderr, "HTTP request exception\n{type}: {e}".format(type=type(e).__name__, e=e)
+        return []
 
     return response.json()
 

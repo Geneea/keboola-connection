@@ -11,11 +11,12 @@ import requests
 import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
-BETA_URL = 'https://beta-api.geneea.com/keboola/'
+BETA_URL = 'https://sandbox.geneea.com/keboola/'
 MAX_REQ_SIZE = 400 * 1024
-DOC_COUNT = 0
 CONNECT_TIMEOUT = 10.01
 READ_TIMEOUT = 128
+
+DOC_COUNT = 0
 
 try:
     from requests.packages import urllib3
@@ -125,10 +126,23 @@ def json_post(url, headers, data):
 
     return response.json()
 
-def main(function):
+def main(analysis_type, csv_header, create_results_fn):
     try:
         config = parse_config()
-        function(config)
+
+        with open(config.input_path, 'rb') as input_file, open(config.output_path, 'wb') as output_file:
+            reader = unfussy_csv_reader(input_file)
+
+            csv_header = [config.id_col] + csv_header
+            writer = csv.DictWriter(output_file, fieldnames=csv_header)
+            writer.writeheader()
+
+            for rows in slice_stream(reader, 100):
+                for doc in make_request(config, analysis_type, rows):
+                    for res_row in create_results_fn(doc):
+                        res_row[config.id_col] = doc['id'].encode('utf-8')
+                        writer.writerow(res_row)
+
         print >> sys.stdout, "the analysis finished"
         sys.exit(0)
     except (LookupError, IOError) as e:

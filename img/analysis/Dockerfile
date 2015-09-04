@@ -4,4 +4,4 @@ FROM geneea/keboola-connection
 MAINTAINER Tomáš Mudruňka <mudrunka@geneea.com>
 
 WORKDIR /home
-ENTRYPOINT python ./src/language.py --data=/data
+ENTRYPOINT python ./src/analysis.py --data=/data

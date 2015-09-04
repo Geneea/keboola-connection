@@ -10,5 +10,8 @@ def create_results(doc):
             'lemmaIndex': str(i)
         }
 
+def csv_header():
+    return ['lemma', 'lemmaIndex']
+
 if __name__ == '__main__':
-    main('lemmatize', ['lemma', 'lemmaIndex'], create_results)
+    main('lemmatize', csv_header(), create_results)

@@ -7,5 +7,8 @@ def create_results(doc):
         'language': doc['language'].encode('utf-8')
     }
 
+def csv_header():
+    return ['language']
+
 if __name__ == '__main__':
-    main('language', ['language'], create_results)
+    main('language', csv_header(), create_results)

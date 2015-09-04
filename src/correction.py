@@ -9,5 +9,8 @@ def create_results(doc):
         'isDiacritized': str(doc['diacritized'])
     }
 
+def csv_header():
+    return ['correctedText', 'isCorrected', 'isDiacritized']
+
 if __name__ == '__main__':
-    main('correction', ['correctedText', 'isCorrected', 'isDiacritized'], create_results)
+    main('correction', csv_header(), create_results)

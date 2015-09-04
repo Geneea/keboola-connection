@@ -7,5 +7,8 @@ def create_results(doc):
         'sentiment': str(doc['sentiment'])
     }
 
+def csv_header():
+    return ['sentiment']
+
 if __name__ == '__main__':
-    main('sentiment', ['sentiment'], create_results)
+    main('sentiment', csv_header(), create_results)

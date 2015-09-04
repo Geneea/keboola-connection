@@ -11,7 +11,7 @@ import requests
 import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
-BETA_URL = 'https://sandbox.geneea.com/keboola/'
+BETA_URL = 'https://beta-api.geneea.com/keboola/'
 MAX_REQ_SIZE = 400 * 1024
 CONNECT_TIMEOUT = 10.01
 READ_TIMEOUT = 128
@@ -33,6 +33,7 @@ class Config:
         self.data_col = config['parameters']['data_column']
         self.language = config['parameters']['language'] if 'language' in config['parameters'] else None
         self.use_beta = config['parameters']['use_beta'] if 'use_beta' in config['parameters'] else False
+        self.analysis_types = config['parameters']['analysis_types'] if 'analysis_types' in config['parameters'] else []
 
         self.customer_id = os.environ['KBC_PROJECTID']
 
@@ -91,8 +92,10 @@ def make_request(config, api_method, rows):
         'language': config.language,
         'documents': documents
     }
-    response = json_post(url, headers, data)
+    if len(config.analysis_types) > 0:
+        data['analysisTypes'] = map(lambda t: str(t).lower(), config.analysis_types)
 
+    response = json_post(url, headers, data)
     if len(response) > 0:
         global DOC_COUNT
         DOC_COUNT += len(documents)

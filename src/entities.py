@@ -12,5 +12,8 @@ def create_results(doc):
             'sentiment': str(e[i]['sentiment'])
         }
 
+def csv_header():
+    return ['entity', 'type', 'textOffset', 'sentiment']
+
 if __name__ == '__main__':
-    main('entities', ['entity', 'type', 'textOffset', 'sentiment'], create_results)
+    main('entities', csv_header(), create_results)

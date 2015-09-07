@@ -27,7 +27,10 @@ except ImportError:
 class Config:
     def __init__(self, data_dir, config):
         self.input_path = data_dir + '/in/tables/' + config['storage']['input']['tables'][0]['source']
-        self.output_path = data_dir + '/out/tables/' + config['storage']['output']['tables'][0]['source']
+        if 'output' in config['parameters']:
+            self.output_path = data_dir + '/out/tables/' + config['parameters']['output']
+        else:
+            self.output_path = data_dir + '/out/tables/' + config['storage']['output']['tables'][0]['source']
         self.user_key = config['parameters']['user_key']
         self.id_col = config['parameters']['id_column']
         self.data_col = config['parameters']['data_column']

@@ -26,11 +26,8 @@ storage:
     tables:
       0:
         source: source.csv
-  output:
-    tables:
-      0:
-        source: result
 parameters:
+  output: result.
   user_key: <ENTER API KEY HERE>
   id_column: id
   data_column: text
@@ -52,7 +49,7 @@ id,text
 ```
 
 ### Output
-Written to `/data/out/tables/result-topic.csv`
+Written to `/data/out/tables/result.topic.csv`
 
 ```
 id,topic,confidence
@@ -61,7 +58,7 @@ id,topic,confidence
 3,Other,NaN
 ```
 
-Written to `/data/out/tables/result-sentiment.csv`
+Written to `/data/out/tables/result.sentiment.csv`
 
 ```
 id,sentiment
@@ -70,7 +67,7 @@ id,sentiment
 3,0.0485071250073
 ```
 
-Written to `/data/out/tables/result-hashtags.csv`
+Written to `/data/out/tables/result.hashtags.csv`
 
 ```
 id,hashtag,score

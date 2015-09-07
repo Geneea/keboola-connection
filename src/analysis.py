@@ -34,7 +34,7 @@ if __name__ == '__main__':
             if analysis_type not in ANALYSIS.keys():
                 raise LookupError("unknown analysis type '{t}'".format(t=analysis_type))
 
-        output_files = {t: open("{path}-{t}.csv".format(path=config.output_path, t=t), 'wb') for t in types}
+        output_files = {t: open("{path}{t}.csv".format(path=config.output_path, t=t), 'wb') for t in types}
         with open(config.input_path, 'rb') as input_file:
             reader = mainTools.unfussy_csv_reader(input_file)
 

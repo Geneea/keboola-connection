@@ -11,7 +11,6 @@ import requests
 import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
-BETA_URL = 'https://beta-api.geneea.com/keboola/'
 MAX_REQ_SIZE = 400 * 1024
 CONNECT_TIMEOUT = 10.01
 READ_TIMEOUT = 128
@@ -35,7 +34,6 @@ class Config:
         self.id_col = config['parameters']['id_column']
         self.data_col = config['parameters']['data_column']
         self.language = config['parameters']['language'] if 'language' in config['parameters'] else None
-        self.use_beta = config['parameters']['use_beta'] if 'use_beta' in config['parameters'] else False
         self.analysis_types = config['parameters']['analysis_types'] if 'analysis_types' in config['parameters'] else []
 
         self.customer_id = os.environ['KBC_PROJECTID']
@@ -85,7 +83,7 @@ def make_request(config, api_method, rows):
     documents = map(lambda row: {'id': row[config.id_col], 'text': row[config.data_col]}, rows)
     documents = filter(lambda doc: len(doc['text']) > 0, documents)
 
-    url = (BASE_URL if not config.use_beta else BETA_URL) + api_method
+    url = BASE_URL + api_method
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'user_key ' + config.user_key
@@ -119,7 +117,7 @@ def json_post(url, headers, data):
             try:
                 err = response.json()
                 print >> sys.stderr, "HTTP error {code}, {e}: {msg}".format(
-                    code=response.status_code, e=err.exception, msg=err.message
+                    code=response.status_code, e=err['exception'], msg=err['message']
                 )
             except ValueError:
                 err = response.text

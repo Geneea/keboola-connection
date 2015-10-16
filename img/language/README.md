@@ -32,7 +32,6 @@ parameters:
   user_key: <ENTER API KEY HERE>
   id_column: id
   data_column: text
-  use_beta: false # OPTIONAL
 ```
 
 ## Sample data

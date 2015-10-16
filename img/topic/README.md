@@ -33,7 +33,6 @@ parameters:
   id_column: id
   data_column: text
   language: en # OPTIONAL
-  use_beta: false # OPTIONAL
 ```
 
 ## Sample data

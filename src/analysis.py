@@ -3,14 +3,14 @@
 import csv
 import sys
 
-import mainTools
-import language
-import lemmatize
 import correction
-import topic
-import sentiment
 import entities
 import hashtags
+import language
+import lemmatize
+import mainTools
+import sentiment
+import topic
 
 ANALYSIS = {
     'language': language,
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                 writers[analysis_type] = csv.DictWriter(output_files[analysis_type], fieldnames=csv_header)
                 writers[analysis_type].writeheader()
 
-            for rows in mainTools.slice_stream(reader, 100):
+            for rows in mainTools.slice_stream(reader, mainTools.DOC_BATCH_SIZE):
                 for doc in mainTools.make_request(config, 'analysis', rows):
                     for analysis_type in types:
                         res = doc['analysisByType'][analysis_type]

@@ -11,7 +11,8 @@ import requests
 import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
-MAX_REQ_SIZE = 400 * 1024
+MAX_REQ_SIZE = 100 * 1024
+DOC_BATCH_SIZE = 25
 CONNECT_TIMEOUT = 10.01
 READ_TIMEOUT = 128
 
@@ -141,7 +142,7 @@ def main(analysis_type, csv_header, create_results_fn):
             writer = csv.DictWriter(output_file, fieldnames=csv_header)
             writer.writeheader()
 
-            for rows in slice_stream(reader, 100):
+            for rows in slice_stream(reader, DOC_BATCH_SIZE):
                 for doc in make_request(config, analysis_type, rows):
                     for res_row in create_results_fn(doc):
                         res_row[config.id_col] = doc['id'].encode('utf-8')

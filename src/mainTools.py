@@ -12,7 +12,7 @@ import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
 MAX_REQ_SIZE = 100 * 1024
-DOC_BATCH_SIZE = 25
+DOC_BATCH_SIZE = 12
 CONNECT_TIMEOUT = 10.01
 READ_TIMEOUT = 128
 

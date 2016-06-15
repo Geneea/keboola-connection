@@ -32,4 +32,6 @@ parameters:
   id_column: id
   data_column: text
   language: en # OPTIONAL
+  domain: "news articles" # OPTIONAL
+  use_beta: false # OPTIONAL
 ```

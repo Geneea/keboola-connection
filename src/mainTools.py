@@ -11,6 +11,7 @@ import requests
 import yaml
 
 BASE_URL = 'https://api.geneea.com/keboola/'
+BETA_URL = 'https://beta-api.geneea.com/keboola/'
 MAX_REQ_SIZE = 100 * 1024
 DOC_BATCH_SIZE = 12
 CONNECT_TIMEOUT = 10.01
@@ -36,6 +37,8 @@ class Config:
         self.data_col = config['parameters']['data_column']
         self.language = config['parameters']['language'] if 'language' in config['parameters'] else None
         self.analysis_types = config['parameters']['analysis_types'] if 'analysis_types' in config['parameters'] else []
+        self.domain = config['parameters']['domain'] if 'domain' in config['parameters'] else None
+        self.use_beta = config['parameters']['use_beta'] if 'use_beta' in config['parameters'] else False
 
         self.customer_id = os.environ['KBC_PROJECTID']
 
@@ -84,7 +87,7 @@ def make_request(config, api_method, rows):
     documents = map(lambda row: {'id': row[config.id_col], 'text': row[config.data_col]}, rows)
     documents = filter(lambda doc: len(doc['text']) > 0, documents)
 
-    url = BASE_URL + api_method
+    url = (BASE_URL if not config.use_beta else BETA_URL) + api_method
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'user_key ' + config.user_key
@@ -92,6 +95,7 @@ def make_request(config, api_method, rows):
     data = {
         'customerId': config.customer_id,
         'language': config.language,
+        'domain': config.domain,
         'documents': documents
     }
     if len(config.analysis_types) > 0:

@@ -33,6 +33,8 @@ parameters:
   data_column: text
   analysis_types: [topic, sentiment, hashtags]
   language: en # OPTIONAL
+  domain: "news articles" # OPTIONAL
+  use_beta: false # OPTIONAL
 ```
 
 ## Sample data

@@ -32,6 +32,8 @@ parameters:
   user_key: <ENTER API KEY HERE>
   id_column: id
   data_column: text
+  domain: "news articles" # OPTIONAL
+  use_beta: false # OPTIONAL
 ```
 
 ## Sample data

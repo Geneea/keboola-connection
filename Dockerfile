@@ -1,4 +1,4 @@
-# VERSION 3.0.1
+# VERSION 2.6.0
 
 FROM keboola/base
 MAINTAINER Tomáš Mudruňka <mudrunka@geneea.com>

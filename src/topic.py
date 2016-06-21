@@ -8,11 +8,8 @@ def create_results(doc):
         'confidence': str(doc['confidence'])
     }
 
-def one_to_many():
-    return False
-
 def csv_header():
     return ['topic', 'confidence']
 
 if __name__ == '__main__':
-    main('topic', csv_header(), create_results, one_to_many())
+    main('topic', csv_header(), create_results)

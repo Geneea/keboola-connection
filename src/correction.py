@@ -9,11 +9,8 @@ def create_results(doc):
         'isDiacritized': str(doc['diacritized'])
     }
 
-def one_to_many():
-    return False
-
 def csv_header():
     return ['correctedText', 'isCorrected', 'isDiacritized']
 
 if __name__ == '__main__':
-    main('correction', csv_header(), create_results, one_to_many())
+    main('correction', csv_header(), create_results)

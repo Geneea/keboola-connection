@@ -10,11 +10,8 @@ def create_results(doc):
             'lemmaIndex': str(i)
         }
 
-def one_to_many():
-    return True
-
 def csv_header():
     return ['lemma', 'lemmaIndex']
 
 if __name__ == '__main__':
-    main('lemmatize', csv_header(), create_results, one_to_many())
+    main('lemmatize', csv_header(), create_results)

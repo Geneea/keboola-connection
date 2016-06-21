@@ -135,21 +135,25 @@ def json_post(url, headers, data):
 
     return response.json()
 
-def main(analysis_type, csv_header, create_results_fn):
+def main(analysis_type, csv_header, create_results_fn, one_to_many):
     try:
         config = parse_config()
 
         with open(config.input_path, 'rb') as input_file, open(config.output_path, 'wb') as output_file:
             reader = unfussy_csv_reader(input_file)
 
-            csv_header = [config.id_col] + csv_header
+            csv_header = ['id', 'inputId'] + csv_header
             writer = csv.DictWriter(output_file, fieldnames=csv_header)
             writer.writeheader()
 
             for rows in slice_stream(reader, DOC_BATCH_SIZE):
                 for doc in make_request(config, analysis_type, rows):
-                    for res_row in create_results_fn(doc):
-                        res_row[config.id_col] = doc['id'].encode('utf-8')
+                    for n, res_row in enumerate(create_results_fn(doc)):
+                        if one_to_many:
+                            res_row['id'] = (doc['id'] + '_' + str(n)).encode('utf-8')
+                        else:
+                            res_row['id'] = doc['id'].encode('utf-8')
+                        res_row['inputId'] = doc['id'].encode('utf-8')
                         writer.writerow(res_row)
 
         print >> sys.stdout, "the analysis finished"

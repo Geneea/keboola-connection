@@ -10,8 +10,11 @@ def create_results(doc):
             'score': str(hashtags[i]['score'])
         }
 
+def one_to_many():
+    return True
+
 def csv_header():
     return ['hashtag', 'score']
 
 if __name__ == '__main__':
-    main('hashtags', csv_header(), create_results)
+    main('hashtags', csv_header(), create_results, one_to_many())

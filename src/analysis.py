@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
             writers = dict()
             for analysis_type in types:
-                csv_header = ['id', 'inputId'] + ANALYSIS[analysis_type].csv_header()
+                csv_header = [config.id_col, 'inputId'] + ANALYSIS[analysis_type].csv_header()
                 writers[analysis_type] = csv.DictWriter(output_files[analysis_type], fieldnames=csv_header)
                 writers[analysis_type].writeheader()
 
@@ -50,9 +50,9 @@ if __name__ == '__main__':
                         res = doc['analysisByType'][analysis_type]
                         for n, res_row in enumerate(ANALYSIS[analysis_type].create_results(res)):
                             if ANALYSIS[analysis_type].one_to_many():
-                                res_row['id'] = (doc['id'] + '_' + str(n)).encode('utf-8')
+                                res_row[config.id_col] = (doc['id'] + '_' + str(n)).encode('utf-8')
                             else:
-                                res_row['id'] = doc['id'].encode('utf-8')
+                                res_row[config.id_col] = doc['id'].encode('utf-8')
                             res_row['inputId'] = doc['id'].encode('utf-8')
                             writers[analysis_type].writerow(res_row)
 

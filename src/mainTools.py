@@ -40,7 +40,7 @@ class Config:
         self.domain = config['parameters']['domain'] if 'domain' in config['parameters'] else None
         self.use_beta = config['parameters']['use_beta'] if 'use_beta' in config['parameters'] else False
 
-        self.customer_id = os.environ['KBC_PROJECTID']
+        self.customer_id = 'US-' + os.environ['KBC_PROJECTID']
 
 def parse_config():
     argparser = argparse.ArgumentParser()
